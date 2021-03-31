@@ -1,0 +1,43 @@
+version: 2.1
+
+workflows:
+  my-workflow:
+    jobs:
+      - build:
+          context:
+            - Harpia
+      - pypi:
+          requires:
+            - build
+          context:
+            - Harpia
+
+jobs:
+  build:
+    docker:
+      - image: circleci/python:3.9.2
+    working_directory: ~/workspace
+    steps:
+      - checkout
+      - run:
+          name: Create package distribution
+          command: python setup.py sdist
+      - persist_to_workspace:
+          root: dist
+          paths:
+            - .
+
+  pypi:
+    docker:
+      - image: circleci/python:3.9.2
+    working_directory: ~/workspace
+    steps:
+      - checkout
+      - attach_workspace:
+          at: dist
+      - run:
+          name: Add permissions to script
+          command: chmod +x .circleci/upload-project.sh
+      - run:
+          name: Upload package
+          command: .circleci/upload-project.sh
