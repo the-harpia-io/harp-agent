@@ -28,16 +28,6 @@ def validate_url(ctx, param, value):
 
 
 def update_config_file(new_config):
-    # Check if file exist and create empty if not
-    if not os.path.exists(os.path.dirname(settings.PATH_TO_MS_CONFIG)):
-        try:
-            os.makedirs(os.path.dirname(settings.PATH_TO_MS_CONFIG))
-            with open(settings.PATH_TO_MS_CONFIG, 'w+') as outfile:
-                json.dump({}, outfile)
-        except OSError as exc:  # Guard against race condition
-            if exc.errno != errno.EEXIST:
-                raise
-
     # Read file
     with open(settings.PATH_TO_MS_CONFIG) as json_file:
         data = json.load(json_file)

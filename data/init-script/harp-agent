@@ -17,6 +17,7 @@ USER=root
 
 PATH=/bin:/usr/bin:/sbin:/usr/sbin:/usr/local/bin
 RETVAL=0
+LOGDIRECTORY="/var/log/${DAEMON}"
 LOGFILE="/var/log/${DAEMON}/${DAEMON}.log"
 PIDFILE="/var/run/${DAEMON}.pid"
 
@@ -67,6 +68,7 @@ start() {
   ulimit -n 65536
   ulimit -s 10240
   ulimit -c unlimited
+  mkdir -p ${LOGDIRECTORY}
   if ! -f $PIDFILE > /dev/null 2>&1
     then
         echo -n "Starting ${DAEMON}: "

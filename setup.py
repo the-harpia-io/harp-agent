@@ -1,13 +1,7 @@
 from setuptools import setup, find_packages
-import os
-import pwd
-import grp
 import sys
-from setuptools import Command
-from setuptools.command.install import install
-
-# SERVICE_NAME = 'harp-agent'
-# SERVICE_NAME_NORMALIZED = SERVICE_NAME.replace('-', '_')
+import subprocess
+import setuptools
 
 CURRENT_PYTHON = sys.version_info[:2]
 REQUIRED_PYTHON = (3, 7)
@@ -28,59 +22,56 @@ with open('requirements.txt') as f:
     requirements = f.read().splitlines()
 
 
-# def change_fcgi_permissions(files=None, folders=None):
-#     if files:
-#         for file in files:
-#             os.chmod(file, 0o755)
-#     if folders:
-#         for folder in folders:
-#             os.chmod(folder, 0o655)
-
-
-# def create_folders():
-#     directories = ['/etc/harp-gate-client', '/var/log/harp-gate-client']
-#     uid = pwd.getpwnam("root").pw_uid
-#     gid = grp.getgrnam("root").gr_gid
-#     for directory in directories:
-#         if not os.path.exists(directory):
-#             os.makedirs(directory)
-#             os.chown(directory, uid, gid)
-
-
-# class CustomInstallCommand(Command):
-#     user_options = []
-#
-#     def initialize_options(self):
-#         """Abstract method that is required to be overwritten"""
-#
-#     def finalize_options(self):
-#         """Abstract method that is required to be overwritten"""
-#
-#     def run(self):
-#         create_folders()
-#         # change_fcgi_permissions([],
-#         #                         [f'/opt/fcgi/'])
-
-# class CustomInstallCommand(install):
-#     """Customized setuptools install command - prints a friendly greeting."""
-#     def run(self):
-#         print("Hello, developer, how are you? :)")
-#         install.run(self)
-
-
 tests_require = ['test'],
+
+
+CUSTOM_COMMANDS = [['echo', 'Custom command worked!']]
+
+
+class CustomCommands(setuptools.Command):
+    """A setuptools Command class able to run arbitrary commands."""
+    def initialize_options(self):
+        pass
+
+    def finalize_options(self):
+        pass
+
+    def RunCustomCommand(self, command_list):
+        print('Running command: %s' % command_list)
+        p = subprocess.Popen(
+            command_list,
+            stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT
+        )
+        # Can use communicate(input='y\n'.encode()) if the command run requires
+        # some confirmation.
+        stdout_data, _ = p.communicate()
+        print('Command output: %s' % stdout_data)
+        if p.returncode != 0:
+            raise RuntimeError('Command %s failed: exit code: %s' % (command_list, p.returncode))
+
+    def run(self):
+        for command in CUSTOM_COMMANDS:
+            self.RunCustomCommand(command)
 
 
 setup(
     name='harp-agent',
     python_requires='>3.7.0',
-    version='1.0.0',
+    version='1.0.4',
     description="Harp Agent",
     url='',
     include_package_data=True,
-    author='',
-    author_email='',
+    author='harpia',
+    author_email='the.harpia.io@gmail.com',
+    maintainer='harpia',
+    maintainer_email='the.harpia.io@gmail.com',
     classifiers=[
+        'Development Status :: 5 - Production/Stable',
+        'Intended Audience :: Developers',
+        'Topic :: Software Development :: Libraries :: Application Frameworks',
+        'Programming Language :: Python :: 3.7',
     ],
     keywords=[],
     packages=find_packages(),
@@ -95,7 +86,10 @@ setup(
         ]
     },
     zip_safe=False,
-    cmdclass={},
+    cmdclass={
+        # Command class instantiated and run during pip install scenarios.
+        'CustomCommands': CustomCommands,
+    },
     data_files=[
         ('/etc/init.d', [
             'data/init-script/harp-agent'
