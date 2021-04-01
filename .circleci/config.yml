@@ -6,7 +6,7 @@ workflows:
       - build:
           context:
             - Harpia
-      - pypi:
+      - deploy:
           requires:
             - build
           context:
@@ -17,27 +17,61 @@ jobs:
     docker:
       - image: circleci/python:3.9.2
     working_directory: ~/workspace
+    environment:
+      SERVICE_NAME: harp-agent
+      SERVICE_VERSION: v1.0.0
+      SERVICE_NAMESPACE: dev
     steps:
       - checkout
+      - setup_remote_docker
       - run:
-          name: Create package distribution
-          command: python setup.py sdist
-      - persist_to_workspace:
-          root: dist
-          paths:
-            - .
+          name: Check variable
+          command: echo ${PROJECT_ID}
+      - run:
+          name: Build docker image
+          command: docker build -t ${SERVICE_NAME}:latest .
+      - run:
+          name: Set the tag for the image
+          command: docker tag ${SERVICE_NAME} theharpia/${SERVICE_NAME}:${SERVICE_VERSION}
+      - run:
+          name: Login to dockerhub
+          command: docker login --username ${DOCKERHUB_USER} --password ${DOCKERHUB_PASS}
+      - run:
+          name: Push image to DockerHub
+          command: docker push theharpia/${SERVICE_NAME}
 
-  pypi:
+  deploy:
     docker:
       - image: circleci/python:3.9.2
     working_directory: ~/workspace
+    environment:
+      SERVICE_NAME: harp-agent
+      SERVICE_VERSION: v1.0.0
+      SERVICE_NAMESPACE: dev
+      HELM_URL: https://get.helm.sh
+      HELM_TGZ: helm-v3.5.2-linux-amd64.tar.gz
+      YAMLLINT_VERSION: 1.8.1
     steps:
       - checkout
-      - attach_workspace:
-          at: dist
+      - setup_remote_docker
       - run:
-          name: Add permissions to script
-          command: chmod +x .circleci/upload-project.sh
+          name: Install Helm
+          command: wget -q ${HELM_URL}/${HELM_TGZ} && sudo tar -C /usr/local/bin --strip-components 1 -zvxpf ${HELM_TGZ} && sudo pip install yamllint=="${YAMLLINT_VERSION}"
       - run:
-          name: Upload package
-          command: .circleci/upload-project.sh
+          name: Install Google console
+          command: curl https://sdk.cloud.google.com | bash -s -- --disable-prompts > /dev/null
+      - run:
+          name: Install and confgure kubectl
+          command: sudo curl -L https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl -o /usr/local/bin/kubectl && sudo chmod +x /usr/local/bin/kubectl
+      - run:
+          name: Clone Helm Repo
+          command: git clone https://the-harpia-io:d820b8cb5080784de9d859ae1bce48e807666d50@github.com/the-harpia-io/harpia-helm-charts.git ${HOME}/harpia-helm-charts
+      - run:
+          name: Create Google cloud Auth Key
+          command: ${HOME}/google-cloud-sdk/bin/gcloud auth activate-service-account --key-file ${HOME}/harpia-helm-charts/gcloud-service-key.json
+      - run:
+          name: Configure Google Cloud
+          command: ${HOME}/google-cloud-sdk/bin/gcloud --quiet config set project ${PROJECT_ID} && ${HOME}/google-cloud-sdk/bin/gcloud --quiet config set container/cluster ${CLUSTER_NAME} && ${HOME}/google-cloud-sdk/bin/gcloud --quiet config set compute/zone ${CLOUDSDK_COMPUTE_ZONE} && ${HOME}/google-cloud-sdk/bin/gcloud --quiet container clusters get-credentials ${CLUSTER_NAME}
+      - run:
+          name: Run Helm
+          command: helm upgrade --install ${SERVICE_NAME} ${HOME}/harpia-helm-charts/charts/${SERVICE_NAME} -n ${SERVICE_NAMESPACE}
