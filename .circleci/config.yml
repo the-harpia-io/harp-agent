@@ -6,11 +6,6 @@ workflows:
       - build:
           context:
             - Harpia
-      - deploy:
-          requires:
-            - build
-          context:
-            - Harpia
 
 jobs:
   build:
