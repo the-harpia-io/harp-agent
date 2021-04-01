@@ -3,14 +3,15 @@ from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 import harp_agent.settings as settings
 import json
+import yaml
 
 
 class MyHandler(FileSystemEventHandler):
     def on_modified(self, event):
         print(f'event type: {event.event_type}  path : {event.src_path}')
 
-        with open(settings.PATH_TO_MS_CONFIG) as json_file:
-            data = json.load(json_file)
+        with open(settings.PATH_TO_MS_CONFIG) as file:
+            data = yaml.load(file, Loader=yaml.FullLoader)
 
         for system_name, system_body in data.items():
             system_payload = {
