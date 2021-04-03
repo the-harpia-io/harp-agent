@@ -39,6 +39,7 @@ def update_configuration():
 
     try:
         while True:
+            print("1")
             time.sleep(1)
     except KeyboardInterrupt:
         observer.stop()

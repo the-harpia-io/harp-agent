@@ -14,7 +14,7 @@ jobs:
     working_directory: ~/workspace
     environment:
       SERVICE_NAME: harp-agent
-      SERVICE_VERSION: v1.0.0
+      SERVICE_VERSION: v1.0.1
       SERVICE_NAMESPACE: dev
     steps:
       - checkout
@@ -41,7 +41,7 @@ jobs:
     working_directory: ~/workspace
     environment:
       SERVICE_NAME: harp-agent
-      SERVICE_VERSION: v1.0.0
+      SERVICE_VERSION: v1.0.1
       SERVICE_NAMESPACE: dev
       HELM_URL: https://get.helm.sh
       HELM_TGZ: helm-v3.5.2-linux-amd64.tar.gz
