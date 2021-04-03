@@ -1,21 +1,4 @@
 from setuptools import setup, find_packages
-# import sys
-# import subprocess
-# import setuptools
-
-# CURRENT_PYTHON = sys.version_info[:2]
-# REQUIRED_PYTHON = (3, 7)
-#
-# if CURRENT_PYTHON < REQUIRED_PYTHON:
-#     sys.stderr.write("""
-# ==========================
-# Unsupported Python version
-# ==========================
-# This version of Harp Agent requires Python {}.{}, but you're trying to
-# install it on Python {}.{}.
-# Please install Python version >=3.7
-# """.format(*(REQUIRED_PYTHON + CURRENT_PYTHON)))
-#     sys.exit(1)
 
 
 with open('requirements.txt') as f:
@@ -49,9 +32,5 @@ setup(
     },
     zip_safe=False,
     cmdclass={},
-    data_files=[
-        ('/etc/init.d', [
-            'data/init-script/harp-agent'
-        ])
-    ]
+    data_files=[]
 )

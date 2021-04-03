@@ -7,7 +7,6 @@ from harp_agent.notifications_collectors.push_notification import notification_s
 import harp_agent.settings as settings
 import threading
 from harp_agent.logic.config_update import update_configuration
-from harp_agent.logic.prepare_service import prepare_service_for_first_start
 
 
 def schedule_watchdog():
@@ -25,8 +24,6 @@ def schedule_jobs():
 
 
 def main():
-    prepare_service_for_first_start()
-
     ServiceConfig.configuration['namespaces'] = [notifications]
     FlaskConfig.FLASK_DEBUG = False
     DbConfig.USE_DB = False

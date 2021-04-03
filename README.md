@@ -1,14 +1,12 @@
-# TODO
-python setup.py sdist; export PYPI_USERNAME=the-harpia-io; export PYPI_PASSWORD=75Hu8x7faS; .circleci/upload-project.sh;  rm -r harp_agent.egg-info; rm -r dist
+# Run the application using Docker Compose
+The main folder of this repository contains a functional docker-compose.yml file. Run the application using it as shown below:
 
-https://www.nylas.com/blog/packaging-deploying-python/
+```
+$ curl -sSL https://raw.githubusercontent.com/the-harpia-io/harp-agent/master/docker-compose.yml > docker-compose.yml
+$ curl -sSL https://raw.githubusercontent.com/the-harpia-io/harp-agent/master/config.yaml > config.yaml
+$ docker-compose up -d
+```
 
-sudo apt-get install debhelper dh-virtualenv
-
-# Create virtual env
-sudo apt install python3.7-venv
-python3.7 -m venv py37-venv
-source py37-venv/bin/activate
-
-https://opensource.com/article/20/4/package-python-applications-linux
-https://mentors.debian.net/intro-maintainers/
+# Configuration
+- NOTIFICATIONS_SCRAPE_INTERVAL_SECONDS: How often scrape alerts from monitoring systems
+- GATE_HOST: Harp gateway to receive alerts from agent
