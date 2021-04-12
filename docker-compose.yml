@@ -1,7 +1,7 @@
 version: '2.1'
 services:
   harp-agent:
-    image: 'theharpia/harp-agent:v1.0.2'
+    image: 'theharpia/harp-agent:v1.0.3'
     volumes:
       - './config.yaml:/code/config.yaml:ro'
     environment:

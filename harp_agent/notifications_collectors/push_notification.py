@@ -77,7 +77,7 @@ class PushAlerts(object):
                         extra={'tags': {'event_id': str(self.event_id)}}
                     )
                     if ms_alerts_raw or alerts_count == 0:
-                        ms_alerts[ms_source] = ms_alerts_raw
+                        ms_alerts[ms_source['url']] = ms_alerts_raw
                     result = self.push_notifications(ms_alerts)
                 else:
                     logger.error(
