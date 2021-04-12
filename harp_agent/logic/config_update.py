@@ -3,15 +3,31 @@ from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 import harp_agent.settings as settings
 import yaml
+from microservice_template_core.tools.logger import get_logger
+
+logger = get_logger()
 
 
 class MyHandler(FileSystemEventHandler):
     def on_modified(self, event):
-        print(f'event type: {event.event_type}  path : {event.src_path}')
+        logger.info(msg=f"Config file was modified - {event.src_path}")
 
         with open(settings.PATH_TO_MS_CONFIG) as file:
             data = yaml.load(file, Loader=yaml.FullLoader)
 
+        self.update_ms_configs(data=data)
+
+    @classmethod
+    def update_config_after_start(cls):
+        logger.info(msg=f"Config was update after start")
+
+        with open(settings.PATH_TO_MS_CONFIG) as file:
+            data = yaml.load(file, Loader=yaml.FullLoader)
+
+        MyHandler.update_ms_configs(data=data)
+
+    @classmethod
+    def update_ms_configs(cls, data):
         settings.ZABBIX_SYSTEMS.clear()
         settings.ICINGA_SYSTEMS.clear()
 
@@ -29,11 +45,12 @@ class MyHandler(FileSystemEventHandler):
                     if monitoring_system == 'icinga':
                         settings.ICINGA_SYSTEMS.append(system_payload)
 
-        print(f"ZABBIX_SYSTEMS: {settings.ZABBIX_SYSTEMS}")
-        print(f"ICINGA_SYSTEMS: {settings.ICINGA_SYSTEMS}")
+        logger.info(msg=f"ZABBIX_SYSTEMS after modification - {settings.ZABBIX_SYSTEMS}")
+        logger.info(msg=f"ICINGA_SYSTEMS after modification - {settings.ICINGA_SYSTEMS}")
 
 
 def update_configuration():
+    MyHandler.update_config_after_start()
     event_handler = MyHandler()
     observer = Observer()
     observer.schedule(event_handler, path=settings.PATH_TO_MS_CONFIG, recursive=False)
