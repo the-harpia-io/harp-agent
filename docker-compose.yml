@@ -7,5 +7,5 @@ services:
       - './config.yaml:/code/config.yaml:ro'
     environment:
       - NOTIFICATIONS_SCRAPE_INTERVAL_SECONDS=5
-      - GATE_HOST=http://127.0.0.1:8081/api/v1/gate-collector
+      - GATE_HOST=http://gate-collector.dev.harpia.io/api/v1/gate-collector
     restart: on-failure
