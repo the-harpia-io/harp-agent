@@ -1,5 +1,5 @@
 from microservice_template_core import Core
-from microservice_template_core.settings import ServiceConfig, FlaskConfig, DbConfig, LoggerConfig
+from microservice_template_core.settings import ServiceConfig, FlaskConfig, DbConfig
 from harp_agent.endpoints.notifications import ns as notifications
 from apscheduler.schedulers.background import BackgroundScheduler
 from pytz import utc

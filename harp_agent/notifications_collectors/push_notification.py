@@ -22,7 +22,6 @@ class PushAlerts(object):
                 url=ms_source,
                 headers={"Content-Type": "application/json"}
             ).status_code
-            print(result)
         except Exception as err:
             return False
 
@@ -112,6 +111,7 @@ def notification_scraper(monitoring_system):
             extra={'tags': {'event_id': str(event_id)}}
         )
         notifications = PushAlerts(monitoring_system, event_id)
-        print(json.dumps(notifications.main()))
+        result = notifications.main()
+        logger.info(msg=f"Pushed notifications to collector - {result}")
     except Exception as err:
-        logger.exception(msg=err)
+        logger.error(msg=err)

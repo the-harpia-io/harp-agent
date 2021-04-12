@@ -14,7 +14,7 @@ $ docker-compose up -d
 # Configuration
 - NOTIFICATIONS_SCRAPE_INTERVAL_SECONDS: How often scrape alerts from monitoring systems
 - GATE_HOST: Harp gateway to receive alerts from agent
-
-
-# For test
-- curl -sSL https://raw.githubusercontent.com/zabbix/zabbix-docker/5.2/docker-compose_v3_ubuntu_mysql_latest.yaml > docker-compose.yml
+- LOKI_SERVER: Service to publish agent logs
+- LOKI_PORT: TBD
+- SERVICE_NAME: TBD
+- PATH_TO_MS_CONFIG: TBD

@@ -21,10 +21,13 @@ class MyHandler(FileSystemEventHandler):
     def update_config_after_start(cls):
         logger.info(msg=f"Config was update after start")
 
-        with open(settings.PATH_TO_MS_CONFIG) as file:
-            data = yaml.load(file, Loader=yaml.FullLoader)
+        try:
+            with open(settings.PATH_TO_MS_CONFIG) as file:
+                data = yaml.load(file, Loader=yaml.FullLoader)
 
-        MyHandler.update_ms_configs(data=data)
+            MyHandler.update_ms_configs(data=data)
+        except Exception as err:
+            logger.error(msg=f"Config was not found - {settings.PATH_TO_MS_CONFIG}. ERROR - {err}")
 
     @classmethod
     def update_ms_configs(cls, data):
@@ -60,10 +63,9 @@ def update_configuration():
         while True:
             with open(settings.PATH_TO_MS_CONFIG) as file:
                 data = yaml.load(file, Loader=yaml.FullLoader)
-            print(data)
             time.sleep(1)
     except KeyboardInterrupt:
         observer.stop()
     except Exception as err:
-        print(err)
+        logger.error(err)
     observer.join()
