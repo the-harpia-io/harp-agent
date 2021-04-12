@@ -6,7 +6,7 @@ marshmallow==3.10.0
 werkzeug==0.16.1
 itsdangerous==1.1.0
 requests==2.25.1
-urllib3==1.26.3
+urllib3==1.26.4
 APScheduler==3.7.0
 click==7.1.2
 validators==0.18.2
