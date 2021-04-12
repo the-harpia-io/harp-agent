@@ -25,9 +25,12 @@ def schedule_jobs():
 
 def main():
     ServiceConfig.configuration['namespaces'] = [notifications]
+    ServiceConfig.SERVICE_NAME = 'harp-agent'
     FlaskConfig.FLASK_DEBUG = False
     DbConfig.USE_DB = False
-    ServiceConfig.SERVICE_PORT = 8082  # Only for test
+    LoggerConfig.LOKI_SERVER = 'loki.monitoring.harpia.io'
+    LoggerConfig.LOKI_PORT = 80
+
     schedule_watchdog()
     schedule_jobs()
 
