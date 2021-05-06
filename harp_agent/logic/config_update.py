@@ -47,6 +47,12 @@ class MyHandler(FileSystemEventHandler):
                         'user': system_body['user'],
                         'password': system_body['password']
                     }
+                    if 'environment_id' in system_body:
+                        system_payload['environment_id'] = system_body['environment_id']
+
+                    if 'scenario_id' in system_body:
+                        system_payload['scenario_id'] = system_body['scenario_id']
+
                     if monitoring_system == 'zabbix':
                         settings.ZABBIX_SYSTEMS.append(system_payload)
 

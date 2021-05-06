@@ -18,23 +18,33 @@ class ZabbixCollector(object):
             'Content-Type': 'application/json-rpc'
         }
 
-    @staticmethod
-    def get_scenario_id(result_body):
+    def get_scenario_id(self, result_body):
         scenario_id = None
         if 'tags' in result_body:
             for single_tag in result_body['tags']:
                 if single_tag['tag'] == 'scenario_id':
                     scenario_id = single_tag['value']
+                    logger.info(msg=f"Get scenario_id: {scenario_id} from Trigger Tag")
+
+        if scenario_id is None:
+            if 'scenario_id' in self.ms_source:
+                scenario_id = self.ms_source['scenario_id']
+                logger.info(msg=f"Get scenario_id: {scenario_id} from global config")
 
         return scenario_id
 
-    @staticmethod
-    def get_environment_id(result_body):
+    def get_environment_id(self, result_body):
         environment_id = None
         if 'tags' in result_body:
             for single_tag in result_body['tags']:
                 if single_tag['tag'] == 'environment_id':
                     environment_id = single_tag['value']
+                    logger.info(msg=f"Get environment_id: {environment_id} from Trigger Tag")
+
+        if environment_id is None:
+            if 'environment_id' in self.ms_source:
+                environment_id = self.ms_source['environment_id']
+                logger.info(msg=f"Get environment_id: {environment_id} from global config")
 
         return environment_id
 

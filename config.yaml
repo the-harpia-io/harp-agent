@@ -2,13 +2,17 @@ company_name: dev
 
 zabbix:
   - integration_name: "zabbix_test"
-    url: "http://127.0.0.1"
+    url: "http://35.188.116.241"
     user: "Admin"
     password: "zabbix"
+#    environment_id: 10
+#    scenario_id: 20
 
 #icinga:
 #  - integration_name: "icinga_test"
 #    url: "http://127.0.0.1"
 #    user: "admin"
 #    password: "admin"
+#    environment_id: 1
+#    scenario_id: 2
 
