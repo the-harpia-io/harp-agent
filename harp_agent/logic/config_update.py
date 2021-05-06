@@ -4,6 +4,7 @@ from watchdog.events import FileSystemEventHandler
 import harp_agent.settings as settings
 import yaml
 from microservice_template_core.tools.logger import get_logger
+import traceback
 
 logger = get_logger()
 
@@ -28,11 +29,12 @@ class MyHandler(FileSystemEventHandler):
 
             MyHandler.update_ms_configs(data=data)
         except Exception as err:
-            logger.error(msg=f"Can`t read config file - {settings.PATH_TO_MS_CONFIG}. ERROR - {err}")
+            logger.error(msg=f"Can`t read config file - {settings.PATH_TO_MS_CONFIG}. ERROR - {err}\nTrace: {traceback.format_exc()}")
 
     @classmethod
     def update_ms_configs(cls, data):
-        settings.GATE_HOST = f"https://{data['company_name']}.harpia.io/harp-gate-collector/api/v1/gate-collector"
+        settings.GATE_HOST = f"http://{data['company_name']}.harpia.io/harp-gate-collector/api/v1/gate-collector"
+        del data['company_name']
 
         settings.ZABBIX_SYSTEMS.clear()
         settings.ICINGA_SYSTEMS.clear()

@@ -18,6 +18,26 @@ class ZabbixCollector(object):
             'Content-Type': 'application/json-rpc'
         }
 
+    @staticmethod
+    def get_scenario_id(result_body):
+        scenario_id = None
+        if 'tags' in result_body:
+            for single_tag in result_body['tags']:
+                if single_tag['tag'] == 'scenario_id':
+                    scenario_id = single_tag['value']
+
+        return scenario_id
+
+    @staticmethod
+    def get_environment_id(result_body):
+        environment_id = None
+        if 'tags' in result_body:
+            for single_tag in result_body['tags']:
+                if single_tag['tag'] == 'environment_id':
+                    environment_id = single_tag['value']
+
+        return environment_id
+
     def ms_notification_output(self, result_body):
         output = {
             'host.name': result_body['hosts'][0]['name'],
@@ -32,7 +52,9 @@ class ZabbixCollector(object):
             'trigger.url': result_body['url'],
             'triggerid': result_body['triggerid'],
             'trigger.hostgroup.name': '',  # Don`t present
-            'trigger.status': 'PROBLEM'
+            'trigger.status': 'PROBLEM',
+            'environment_id': self.get_environment_id(result_body),
+            'scenario_id': self.get_scenario_id(result_body)
         }
 
         return output
@@ -90,7 +112,8 @@ class ZabbixCollector(object):
                 "expandComment": 1,
                 "selectHosts": ["name"],
                 "selectItems": ["item"],
-                "selectGroups": ["group"]
+                "selectGroups": ["group"],
+                "selectTags": "extend"
             },
             "auth": self.zabbix_auth(),
             "id": 1
