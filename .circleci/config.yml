@@ -37,30 +37,18 @@ jobs:
 
   deploy:
     docker:
-      - image: circleci/python:3.9.2
+      - image: theharpia/microservice_template_core:v2.0.6
     working_directory: ~/workspace
     environment:
       SERVICE_NAME: harp-agent
       SERVICE_VERSION: v1.0.3
       SERVICE_NAMESPACE: dev
-      HELM_URL: https://get.helm.sh
-      HELM_TGZ: helm-v3.5.2-linux-amd64.tar.gz
-      YAMLLINT_VERSION: 1.8.1
     steps:
       - checkout
       - setup_remote_docker
       - run:
-          name: Install Helm
-          command: wget -q ${HELM_URL}/${HELM_TGZ} && sudo tar -C /usr/local/bin --strip-components 1 -zvxpf ${HELM_TGZ} && sudo pip install yamllint=="${YAMLLINT_VERSION}"
-      - run:
-          name: Install Google console
-          command: curl https://sdk.cloud.google.com | bash -s -- --disable-prompts > /dev/null
-      - run:
-          name: Install and confgure kubectl
-          command: sudo curl -L https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl -o /usr/local/bin/kubectl && sudo chmod +x /usr/local/bin/kubectl
-      - run:
           name: Clone Helm Repo
-          command: git clone https://the-harpia-io:d820b8cb5080784de9d859ae1bce48e807666d50@github.com/the-harpia-io/harpia-helm-charts.git ${HOME}/harpia-helm-charts
+          command: git clone https://the-harpia-io:${GITHUB_ACCESS_KEY}@github.com/the-harpia-io/harpia-helm-charts.git ${HOME}/harpia-helm-charts
       - run:
           name: Create Google cloud Auth Key
           command: ${HOME}/google-cloud-sdk/bin/gcloud auth activate-service-account --key-file ${HOME}/harpia-helm-charts/gcloud-service-key.json

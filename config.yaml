@@ -1,3 +1,6 @@
+# Global Settings
+company_name: dev
+
 # Test configuration for Zabbix system
 zabbix:
 #  - integration_name: "zabbix_test"

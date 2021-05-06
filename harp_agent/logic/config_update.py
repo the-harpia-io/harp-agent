@@ -31,6 +31,8 @@ class MyHandler(FileSystemEventHandler):
 
     @classmethod
     def update_ms_configs(cls, data):
+        settings.GATE_HOST = f"https://{data['company_name']}.harpia.io/harp-gate-collector/api/v1/gate-collector"
+
         settings.ZABBIX_SYSTEMS.clear()
         settings.ICINGA_SYSTEMS.clear()
 

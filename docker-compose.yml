@@ -6,9 +6,8 @@ services:
       - './config.yaml:/code/config.yaml:ro'
     environment:
       - NOTIFICATIONS_SCRAPE_INTERVAL_SECONDS=5
-      - GATE_HOST=http://gate-collector.dev.harpia.io/api/v1/gate-collector
-      - LOKI_SERVER=loki.monitoring.harpia.io
-      - LOKI_PORT=80
+      - LOKI_SERVER=loki-prod.harpia.io
+      - LOKI_PORT=443
       - SERVICE_NAME=harp-agent
       - PATH_TO_MS_CONFIG=/code/config.yaml
     restart: on-failure
