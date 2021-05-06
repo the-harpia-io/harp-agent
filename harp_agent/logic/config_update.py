@@ -19,15 +19,16 @@ class MyHandler(FileSystemEventHandler):
 
     @classmethod
     def update_config_after_start(cls):
-        logger.info(msg=f"Config was update after start")
+        logger.info(msg=f"Start reading config after start")
 
         try:
             with open(settings.PATH_TO_MS_CONFIG) as file:
                 data = yaml.load(file, Loader=yaml.FullLoader)
+                logger.info(msg=f"Config content - {data}")
 
             MyHandler.update_ms_configs(data=data)
         except Exception as err:
-            logger.error(msg=f"Config was not found - {settings.PATH_TO_MS_CONFIG}. ERROR - {err}")
+            logger.error(msg=f"Can`t read config file - {settings.PATH_TO_MS_CONFIG}. ERROR - {err}")
 
     @classmethod
     def update_ms_configs(cls, data):
