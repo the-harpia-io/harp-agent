@@ -7,6 +7,9 @@ zabbix_export:
       type: WEBHOOK
       parameters:
         -
+          name: harp_endpoint
+          value: '<URL Generated in Harp Integrations>'
+        -
           name: alert_message
           value: '{ALERT.MESSAGE}'
         -
@@ -40,7 +43,7 @@ zabbix_export:
           name: hostip
           value: '{HOST.IP}'
         -
-          name: host_name+
+          name: host_name
           value: '{HOST.NAME}'
         -
           name: severity
